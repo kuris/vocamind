@@ -1,25 +1,32 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { Comment } from '../types';
 
-export function useComments() {
+export function useComments(wordId: number) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch comments from Supabase
-  const fetchComments = async () => {
+  // Fetch comments for specific wordId
+  const fetchComments = async (showLoading = false) => {
+    if (!wordId) {
+      setComments([]);
+      setLoading(false);
+      return;
+    }
     try {
-      setLoading(true);
+      if (showLoading) setLoading(true);
       const { data, error } = await supabase
         .from('comments')
         .select('*')
+        .eq('word_id', wordId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
       const formattedComments: Comment[] = data.map(comment => ({
-        id: parseInt(comment.id.replace(/-/g, '').substring(0, 10), 16), // Convert UUID to number for compatibility
+        id: parseInt(comment.id.replace(/-/g, '').substring(0, 10), 16),
         wordId: comment.word_id,
         content: comment.content,
         author: comment.author,
@@ -31,7 +38,7 @@ export function useComments() {
       setError(err instanceof Error ? err.message : 'Failed to fetch comments');
       console.error('Error fetching comments:', err);
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
     }
   };
 
@@ -70,7 +77,6 @@ export function useComments() {
   // Delete comment
   const deleteComment = async (commentId: number) => {
     try {
-      // Find the comment to get its UUID
       const commentToDelete = comments.find(c => c.id === commentId);
       if (!commentToDelete) return false;
 
@@ -93,7 +99,13 @@ export function useComments() {
   };
 
   useEffect(() => {
-    fetchComments();
+    if (!wordId) {
+      setComments([]);
+      setLoading(false);
+      return;
+    }
+    // Only show loading when navigating (wordId changes)
+    fetchComments(true);
 
     // Set up real-time subscription
     const subscription = supabase
@@ -101,7 +113,7 @@ export function useComments() {
       .on('postgres_changes', 
         { event: '*', schema: 'public', table: 'comments' },
         () => {
-          fetchComments(); // Refetch comments when changes occur
+          fetchComments(false);
         }
       )
       .subscribe();
@@ -109,7 +121,7 @@ export function useComments() {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [wordId]);
 
   return {
     comments,

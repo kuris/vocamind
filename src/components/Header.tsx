@@ -9,7 +9,7 @@ export const Header: React.FC = () => {
           <Brain size={32} />
         </div>
         <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-          VocabMind
+          VoCaMind
         </h1>
         <Sparkles className="text-yellow-400" size={28} />
       </div>

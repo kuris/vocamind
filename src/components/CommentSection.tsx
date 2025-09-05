@@ -11,6 +11,7 @@ interface CommentSectionProps {
   onAddComment: (wordId: number, content: string, author: string) => Promise<boolean>;
   onDeleteComment: (commentId: number) => Promise<boolean>;
   loading?: boolean;
+  refetchComments?: () => void;
 }
 
 export const CommentSection: React.FC<CommentSectionProps> = ({
@@ -19,8 +20,15 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
   comments,
   onAddComment,
   onDeleteComment,
-  loading = false
+  loading = false,
+  refetchComments
 }) => {
+  // 단어가 바뀔 때마다 댓글 새로고침
+  React.useEffect(() => {
+    if (refetchComments) {
+      refetchComments();
+    }
+  }, [wordId, refetchComments]);
   const [newComment, setNewComment] = useState('');
   const [authorName, setAuthorName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,8 +51,13 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
     setIsGenerating(true);
     try {
       const technique = await generateMemoryTechnique(word.english, word.korean);
-      setNewComment(technique);
-      setAuthorName('AI 도우미 🤖');
+      // 바로 DB에 저장
+      const success = await onAddComment(wordId, technique, 'AI 도우미 🤖');
+      if (success && refetchComments) {
+        refetchComments();
+      }
+      setNewComment('');
+      setAuthorName('');
     } catch (error) {
       alert(error instanceof Error ? error.message : 'AI 연상고리 생성에 실패했습니다.');
     } finally {
@@ -57,6 +70,10 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
 
   const wordComments = comments.filter(comment => comment.wordId === wordId);
 
+  // AI 도우미 댓글과 일반 댓글 분리
+  const aiComments = [...wordComments].filter(c => c.author.includes('AI 도우미')).reverse();
+  const userComments = [...wordComments].filter(c => !c.author.includes('AI 도우미'));
+
   return (
     <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 shadow-inner">
       <div className="flex items-center gap-2 mb-6">
@@ -64,7 +81,37 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
         <h3 className="text-xl font-bold text-gray-800">💡 연상고리 & 기억법</h3>
         {loading && <Loader2 className="animate-spin text-purple-500" size={20} />}
       </div>
-      
+
+      {/* AI 도우미 댓글 먼저 렌더링 */}
+      {aiComments.length > 0 && (
+        <div className="space-y-4 mb-6">
+          {aiComments.map((comment) => (
+            <div
+              key={comment.id}
+              className={`bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow relative group border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50`}
+            >
+              <div className="flex justify-between items-start mb-2">
+                <span className="text-sm font-medium flex items-center gap-1 text-emerald-600">
+                  <Sparkles size={14} />
+                  <span>{comment.author}</span>
+                </span>
+                <button
+                  onClick={() => handleDelete(comment.id)}
+                  className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all p-1 rounded"
+                  title="댓글 삭제"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+              <p className="text-gray-700 leading-relaxed mb-2">{comment.content}</p>
+              <span className="text-xs text-gray-400">
+                {comment.createdAt.toLocaleDateString('ko-KR')} {comment.createdAt.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="mb-6">
         <div className="flex gap-3 mb-3">
           <input
@@ -123,20 +170,13 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
             <p className="text-sm">첫 번째 기억법을 공유하거나 AI 생성을 시도해보세요! ✨</p>
           </div>
         ) : (
-          wordComments.map((comment) => (
+          [...userComments].reverse().map((comment) => (
             <div
               key={comment.id}
-              className={`bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow relative group ${
-                comment.author.includes('AI 도우미') 
-                  ? 'border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50' 
-                  : 'border-gray-100'
-              }`}
+              className={`bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow relative group border-gray-100`}
             >
               <div className="flex justify-between items-start mb-2">
-                <span className={`text-sm font-medium flex items-center gap-1 ${
-                  comment.author.includes('AI 도우미') ? 'text-emerald-600' : 'text-purple-600'
-                }`}>
-                  {comment.author.includes('AI 도우미') && <Sparkles size={14} />}
+                <span className="text-sm font-medium flex items-center gap-1 text-purple-600">
                   <span>{comment.author}</span>
                 </span>
                 <button
