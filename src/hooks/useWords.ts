@@ -14,7 +14,7 @@ export function useWords() {
         .from('words')
         .select('*')
         .order('id', { ascending: true })
-        .range(0, 1990); // fetch all 1991 words
+        .range(0, 1990); // 1991개 모두 가져오기
       if (error) {
         setError(error.message);
       } else {
