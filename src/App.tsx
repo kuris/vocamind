@@ -1,4 +1,3 @@
-import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Analytics } from "@vercel/analytics/react";
 import React, { useState } from 'react';
 import { WordCard } from './components/WordCard';
@@ -84,7 +83,6 @@ function App() {
           </div>
         </div>
       </div>
-      <SpeedInsights />
       <Analytics />
     </>
   );
