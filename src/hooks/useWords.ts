@@ -10,15 +10,28 @@ export function useWords() {
   useEffect(() => {
     async function fetchWords() {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('words')
-        .select('*')
-        .order('id', { ascending: true })
-        .range(0, 1990); // 1991개 모두 가져오기
-      if (error) {
-        setError(error.message);
-      } else {
-        setWords(data || []);
+      try {
+        // 첫 번째 0~999
+        const { data: data1, error: error1 } = await supabase
+          .from('words')
+          .select('*')
+          .order('id', { ascending: true })
+          .range(0, 999);
+
+        // 두 번째 1000~1990
+        const { data: data2, error: error2 } = await supabase
+          .from('words')
+          .select('*')
+          .order('id', { ascending: true })
+          .range(1000, 1990);
+
+        if (error1 || error2) {
+          setError((error1?.message || '') + (error2?.message || ''));
+        } else {
+          setWords([...(data1 || []), ...(data2 || [])]);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch words');
       }
       setLoading(false);
     }
