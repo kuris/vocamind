@@ -20,6 +20,8 @@ function App() {
     gongmuwon: 'gongmuwon',
     gtelp: 'gtelp',
     'kr-en-basic': 'kr-en-basic',
+    'random-study': 'toeic', // 기본값, 실제 랜덤은 아래에서 처리
+    'random-quiz': 'toeic', // 기본값, 실제 랜덤은 아래에서 처리
   };
   const [tab, setTab] = useState('toeic');
   const category = tabToCategory[tab];
@@ -27,12 +29,16 @@ function App() {
   const { words, loading: wordsLoading, error: wordsError } = useWords(category);
   const currentWord = words[currentWordIndex];
 
-  // 단어 리스트가 바뀔 때마다 랜덤 인덱스 선택
+  // 단어 리스트가 바뀔 때마다 인덱스 초기화 (랜덤탭이면 랜덤)
   React.useEffect(() => {
     if (words.length > 0) {
-      setCurrentWordIndex(0);
+      if (tab === 'random-study' || tab === 'random-quiz') {
+        setCurrentWordIndex(Math.floor(Math.random() * words.length));
+      } else {
+        setCurrentWordIndex(0);
+      }
     }
-  }, [words]);
+  }, [words, tab]);
   // Always call useComments, even if currentWord is undefined
   const { comments, loading, error, addComment, deleteComment, refetch } = useComments(currentWord?.id);
 
@@ -54,11 +60,19 @@ function App() {
   }
 
   const handlePrevious = () => {
-  setCurrentWordIndex((prev) => Math.max(0, prev - 1));
+    if (tab === 'random-study' || tab === 'random-quiz') {
+      setCurrentWordIndex(Math.floor(Math.random() * words.length));
+    } else {
+      setCurrentWordIndex((prev) => Math.max(0, prev - 1));
+    }
   };
 
   const handleNext = () => {
-  setCurrentWordIndex((prev) => Math.min(words.length - 1, prev + 1));
+    if (tab === 'random-study' || tab === 'random-quiz') {
+      setCurrentWordIndex(Math.floor(Math.random() * words.length));
+    } else {
+      setCurrentWordIndex((prev) => Math.min(words.length - 1, prev + 1));
+    }
   };
 
   // 랜덤 기능 완전히 제거

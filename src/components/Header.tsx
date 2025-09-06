@@ -14,6 +14,8 @@ export const Header: React.FC<HeaderProps> = ({ category, setCategory }) => {
     { key: 'gongmuwon', label: '공무원' },
     { key: 'gtelp', label: 'GTELP' },
     { key: 'kr-en-basic', label: '기초한국어' },
+    { key: 'random-study', label: '랜덤학습' },
+    { key: 'random-quiz', label: '랜덤퀴즈' },
   ];
   return (
     <header className="bg-gradient-to-r from-purple-400 to-pink-300 shadow-lg p-4 flex flex-col items-center">
