@@ -8,11 +8,12 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ category, setCategory }) => {
   const categories = [
-    { key: 'toeic', label: '토익' },
-    { key: 'toefl', label: '토플' },
+    { key: 'toeic', label: 'TOEIC' },
+    { key: 'toefl', label: 'TOEFL' },
     { key: 'suneung', label: '수능' },
-    { key: 'gtelp', label: '지텔프' },
     { key: 'gongmuwon', label: '공무원' },
+    { key: 'gtelp', label: 'GTELP' },
+    { key: 'kr-en-basic', label: '기초한국어' },
   ];
   return (
     <header className="bg-gradient-to-r from-purple-400 to-pink-300 shadow-lg p-4 flex flex-col items-center">

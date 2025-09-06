@@ -8,7 +8,17 @@ import { useWords } from './hooks/useWords';
 import { useComments } from './hooks/useComments';
 
 function App() {
-  const [category, setCategory] = useState('toeic');
+  // 탭 key와 DB category 매핑
+  const tabToCategory: Record<string, string> = {
+    toeic: 'toeic',
+    toefl: 'toefl',
+    suneung: 'suneung',
+    gongmuwon: 'gongmuwon',
+    gtelp: 'gtelp',
+    'kr-en-basic': 'kr-en-basic',
+  };
+  const [tab, setTab] = useState('toeic');
+  const category = tabToCategory[tab];
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const { words, loading: wordsLoading, error: wordsError } = useWords(category);
   const currentWord = words[currentWordIndex];
@@ -64,7 +74,7 @@ function App() {
     <>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
         <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <Header category={category} setCategory={setCategory} />
+          <Header category={tab} setCategory={setTab} />
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
               <p className="font-medium">오류가 발생했습니다:</p>
@@ -79,7 +89,7 @@ function App() {
               onNext={handleNext}
               onRandom={handleRandom}
             />
-            <WordCard word={currentWord} />
+            <WordCard word={currentWord} category={category} />
             <CommentSection
               wordId={currentWord.id}
               word={currentWord}

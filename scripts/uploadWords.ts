@@ -1,21 +1,27 @@
 import 'dotenv/config';
 import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
+import 'dotenv/config';
+import { createClient } from '@supabase/supabase-js';
+import fs from 'fs';
 import path from 'path';
 import Papa from 'papaparse';
 
-// 환경변수에서 Supabase 정보 불러오기
-const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-// 업로드할 CSV 파일 목록과 카테고리 매핑
-const files = [
-  { file: 'toeicword.csv', category: 'toeic' },
-  { file: 'toeflword.csv', category: 'toefl' },
-  { file: 'gongmuwonword.csv', category: 'gongmuwon' },
-  { file: 'suneungword.csv', category: 'suneung' },
-  { file: 'gtelpword.csv', category: 'gtelp' },
+// 파일명과 카테고리를 인자로 받음
+const args = process.argv.slice(2);
+let files;
+if (args.length === 2) {
+  files = [ { file: args[0], category: args[1] } ];
+} else {
+  files = [
+    { file: 'toeicword.csv', category: 'toeic' },
+    { file: 'toeflword.csv', category: 'toefl' },
+    { file: 'gongmuwonword.csv', category: 'gongmuwon' },
+    { file: 'suneungword.csv', category: 'suneung' },
+    { file: 'gtelpword.csv', category: 'gtelp' },
+    { file: 'koreanword.csv', category: 'kr-en-basic' },
+  ];
+  { file: 'koreanword.csv', category: 'kr-en-basic' },
 ];
 
 async function uploadCSV(filePath: string, category: string) {
