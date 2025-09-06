@@ -6,7 +6,7 @@ interface WordNavigationProps {
   totalWords: number;
   onPrevious: () => void;
   onNext: () => void;
-  onRandom: () => void;
+  // onRandom prop 제거
 }
 
 export const WordNavigation: React.FC<WordNavigationProps> = ({
@@ -14,7 +14,7 @@ export const WordNavigation: React.FC<WordNavigationProps> = ({
   totalWords,
   onPrevious,
   onNext,
-  onRandom
+  // onRandom 제거
 }) => {
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
@@ -35,13 +35,7 @@ export const WordNavigation: React.FC<WordNavigationProps> = ({
           <span className="hidden sm:inline">이전</span>
         </button>
         
-        <button
-          onClick={onRandom}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:from-green-600 hover:to-teal-600"
-        >
-          <RotateCcw size={20} />
-          <span className="hidden sm:inline">랜덤</span>
-        </button>
+  {/* 랜덤 버튼 완전히 제거 */}
         
         <button
           onClick={onNext}
