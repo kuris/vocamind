@@ -3,6 +3,8 @@ export interface Word {
   english: string;
   korean: string;
   pronunciation?: string;
+  partOfSpeech?: string;
+  tip?: string;
 }
 
 export interface Comment {

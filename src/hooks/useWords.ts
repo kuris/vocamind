@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { Word } from '../types';
 
-export function useWords() {
+export function useWords(category: string) {
   const [words, setWords] = useState<Word[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -11,32 +11,38 @@ export function useWords() {
     async function fetchWords() {
       setLoading(true);
       try {
-        // 첫 번째 0~999
-        const { data: data1, error: error1 } = await supabase
-          .from('words')
-          .select('*')
-          .order('id', { ascending: true })
-          .range(0, 999);
-
-        // 두 번째 1000~1990
-        const { data: data2, error: error2 } = await supabase
-          .from('words')
-          .select('*')
-          .order('id', { ascending: true })
-          .range(1000, 1990);
-
-        if (error1 || error2) {
-          setError((error1?.message || '') + (error2?.message || ''));
-        } else {
-          setWords([...(data1 || []), ...(data2 || [])]);
+        let allWords: Word[] = [];
+        let offset = 0;
+        const pageSize = 1000;
+        let hasMore = true;
+        while (hasMore) {
+          const { data, error } = await supabase
+            .from('words')
+            .select('*')
+            .eq('category', category)
+            .order('id', { ascending: true })
+            .range(offset, offset + pageSize - 1);
+          if (error) {
+            setError(error.message);
+            break;
+          }
+          if (data && data.length > 0) {
+            allWords = allWords.concat(data);
+            hasMore = data.length === pageSize;
+            offset += pageSize;
+          } else {
+            hasMore = false;
+          }
         }
+        setWords(allWords);
+        console.log('Loaded words:', allWords);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch words');
       }
       setLoading(false);
     }
     fetchWords();
-  }, []);
+  }, [category]);
 
   return { words, loading, error };
 }

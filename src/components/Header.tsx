@@ -1,22 +1,36 @@
 import React from 'react';
 import { Brain, Sparkles } from 'lucide-react';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  category: string;
+  setCategory: (cat: string) => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({ category, setCategory }) => {
+  const categories = [
+    { key: 'toeic', label: '토익' },
+    { key: 'toefl', label: '토플' },
+    { key: 'suneung', label: '수능' },
+    { key: 'gtelp', label: '지텔프' },
+    { key: 'gongmuwon', label: '공무원' },
+  ];
   return (
-    <header className="text-center mb-12">
-      <div className="flex items-center justify-center gap-3 mb-4">
-        <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full text-white shadow-lg">
-          <Brain size={32} />
-        </div>
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-          MagicVoca
-        </h1>
-        <Sparkles className="text-yellow-400" size={28} />
+    <header className="bg-gradient-to-r from-purple-400 to-pink-300 shadow-lg p-4 flex flex-col items-center">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-3xl font-bold text-white drop-shadow">MagicVoca</span>
+        <span className="text-xl">✨</span>
       </div>
-      <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-        영어 단어를 더 쉽고 재미있게! 📚✨<br />
-        <span className="text-sm text-gray-500">다른 사람들의 창의적인 기억법도 함께 확인해보세요</span>
-      </p>
+      <nav className="flex gap-4 bg-white rounded-full px-4 py-1 shadow">
+        {categories.map(cat => (
+          <button
+            key={cat.key}
+            className={`font-semibold px-3 py-1 rounded-full transition-colors ${category === cat.key ? 'bg-purple-100 text-purple-700' : 'text-purple-600 hover:bg-purple-100'}`}
+            onClick={() => setCategory(cat.key)}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </nav>
     </header>
   );
 };
