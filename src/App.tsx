@@ -11,7 +11,7 @@ import { useWords } from './hooks/useWords';
 import { useComments } from './hooks/useComments';
 
 function App() {
-  const [mode, setMode] = useState<'study' | 'quiz'>('study');
+  const [mode, setMode] = useState<'study' | 'quiz' | 'random-study' | 'random-quiz'>('study');
   // 탭 key와 DB category 매핑
   const tabToCategory: Record<string, string> = {
     toeic: 'toeic',
@@ -24,6 +24,7 @@ function App() {
     'random-quiz': 'toeic', // 기본값, 실제 랜덤은 아래에서 처리
   };
   const [tab, setTab] = useState('toeic');
+  // mode에 따라 tab을 자동으로 맞추는 대신, tab은 카테고리만 담당
   const category = tabToCategory[tab];
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const { words, loading: wordsLoading, error: wordsError } = useWords(category);
@@ -32,13 +33,13 @@ function App() {
   // 단어 리스트가 바뀔 때마다 인덱스 초기화 (랜덤탭이면 랜덤)
   React.useEffect(() => {
     if (words.length > 0) {
-      if (tab === 'random-study' || tab === 'random-quiz') {
+      if (mode === 'random-study' || mode === 'random-quiz') {
         setCurrentWordIndex(Math.floor(Math.random() * words.length));
       } else {
         setCurrentWordIndex(0);
       }
     }
-  }, [words, tab]);
+  }, [words, mode]);
   // Always call useComments, even if currentWord is undefined
   const { comments, loading, error, addComment, deleteComment, refetch } = useComments(currentWord?.id);
 
@@ -60,7 +61,7 @@ function App() {
   }
 
   const handlePrevious = () => {
-    if (tab === 'random-study' || tab === 'random-quiz') {
+    if (mode === 'random-study' || mode === 'random-quiz') {
       setCurrentWordIndex(Math.floor(Math.random() * words.length));
     } else {
       setCurrentWordIndex((prev) => Math.max(0, prev - 1));
@@ -68,7 +69,7 @@ function App() {
   };
 
   const handleNext = () => {
-    if (tab === 'random-study' || tab === 'random-quiz') {
+    if (mode === 'random-study' || mode === 'random-quiz') {
       setCurrentWordIndex(Math.floor(Math.random() * words.length));
     } else {
       setCurrentWordIndex((prev) => Math.min(words.length - 1, prev + 1));
@@ -100,6 +101,14 @@ function App() {
               className={`px-4 py-2 rounded-lg font-bold ${mode === 'quiz' ? 'bg-purple-500 text-white' : 'bg-gray-100 text-gray-700'}`}
               onClick={() => setMode('quiz')}
             >퀴즈</button>
+            <button
+              className={`px-4 py-2 rounded-lg font-bold ${mode === 'random-study' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              onClick={() => setMode('random-study')}
+            >랜덤학습</button>
+            <button
+              className={`px-4 py-2 rounded-lg font-bold ${mode === 'random-quiz' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              onClick={() => setMode('random-quiz')}
+            >랜덤퀴즈</button>
           </div>
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
@@ -107,7 +116,7 @@ function App() {
               <p className="text-sm">{error}</p>
             </div>
           )}
-          {mode === 'study' ? (
+          {(mode === 'study' || mode === 'random-study') ? (
             <>
               <WordNavigation
                 currentIndex={currentWordIndex}
