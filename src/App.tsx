@@ -115,7 +115,8 @@ function App() {
           ) : (
             <QuizCard
               word={currentWord}
-              options={getQuizOptions(words, currentWordIndex)}
+              options={getQuizOptions(words, currentWordIndex, category)}
+              category={category}
               onNext={handleNext}
               onPrev={handlePrevious}
               currentIndex={currentWordIndex}
