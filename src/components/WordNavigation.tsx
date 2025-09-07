@@ -28,8 +28,7 @@ export const WordNavigation: React.FC<WordNavigationProps> = ({
       <div className="flex items-center gap-3">
         <button
           onClick={onPrevious}
-          disabled={currentIndex === 0}
-          className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-gray-700 hover:text-blue-600 border border-gray-200"
+          className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 text-gray-700 hover:text-blue-600 border border-gray-200"
         >
           <ChevronLeft size={20} />
           <span className="hidden sm:inline">이전</span>
