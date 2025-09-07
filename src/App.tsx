@@ -77,7 +77,12 @@ function App() {
     if (mode === 'random-study' || mode === 'random-quiz') {
       setCurrentWordIndex(Math.floor(Math.random() * words.length));
     } else {
-      setCurrentWordIndex((prev) => Math.min(words.length - 1, prev + 1));
+      setCurrentWordIndex((prev) => {
+        if (prev === words.length - 1) {
+          return 0;
+        }
+        return Math.min(words.length - 1, prev + 1);
+      });
     }
   };
 
