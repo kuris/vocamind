@@ -24,7 +24,7 @@ export const Header: React.FC<HeaderProps> = ({ category, setCategory }) => {
   { key: 'suneung', label: '수능', available: true, lang: 'US' },
   { key: 'gongmuwon', label: '공무원', available: true, lang: 'US' },
   { key: 'gtelp', label: 'GTELP', available: true, lang: 'US' },
-  { key: 'kr-en-basic', label: selectedLang === 'KR' ? '일반회화' : '기초한국어', available: false, lang: 'KR' },
+  { key: 'kr-en-basic', label: selectedLang === 'KR' ? '일반회화' : '기초한국어', available: true, lang: 'KR' },
   ];
   const categories = allCategories.filter(cat => selectedLang === 'US' ? cat.lang === 'US' : cat.lang === 'KR');
   return (
@@ -35,7 +35,7 @@ export const Header: React.FC<HeaderProps> = ({ category, setCategory }) => {
       </div>
       <div className="flex flex-col items-center w-full mb-2">
         <span className="text-white font-semibold mb-1">🌐 학습 언어 선택</span>
-        <div className="flex gap-2 flex-wrap justify-center">
+  <div className="flex gap-1 sm:gap-2 overflow-x-auto scrollbar-hide whitespace-nowrap justify-center">
           {LANGUAGES.map(lang => (
             <button
               key={lang.code}
