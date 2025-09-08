@@ -16,6 +16,18 @@ const LANGUAGES = [
 
 export const Header: React.FC<HeaderProps> = ({ category, setCategory }) => {
   const [selectedLang, setSelectedLang] = useState('US');
+
+  // 언어 선택 시 첫 번째 카테고리 자동 선택
+  const handleLangSelect = (langCode: string) => {
+    setSelectedLang(langCode);
+    const filtered = allCategories.filter(cat => {
+      if (langCode === 'US') return cat.lang === 'US';
+      if (langCode === 'KR') return cat.lang === 'KR';
+      if (langCode === 'TH') return cat.lang === 'TH';
+      return false;
+    });
+    if (filtered.length > 0) setCategory(filtered[0].key);
+  };
   // 영어 관련 카테고리만 보여주기 (US 선택 시)
   const allCategories = [
     { key: 'toeic', label: 'TOEIC', available: true, lang: 'US' },
@@ -54,7 +66,7 @@ export const Header: React.FC<HeaderProps> = ({ category, setCategory }) => {
                 ${lang.available ? 'bg-white text-purple-600 hover:bg-purple-100' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}
               `}
               disabled={!lang.available}
-              onClick={() => lang.available && setSelectedLang(lang.code)}
+              onClick={() => lang.available && handleLangSelect(lang.code)}
             >
               <span className="text-xl">{lang.flag}</span>
               <span>{lang.label}</span>
