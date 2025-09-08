@@ -58,7 +58,7 @@ export const QuizCard: React.FC<QuizCardProps> = ({ word, options, category, onN
             `}
             disabled={showResult}
           >
-            {option}
+            {`${idx + 1}. ${option}`}
           </button>
         ))}
       </div>
