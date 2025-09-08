@@ -21,6 +21,35 @@ export const QuizCard: React.FC<QuizCardProps> = ({ word, options, category, onN
     setShowResult(false);
   }, [word]);
 
+    // 숫자키(1~4)로 바로 선택 가능하게
+    React.useEffect(() => {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (!showResult && e.key >= '1' && e.key <= '4') {
+          const idx = parseInt(e.key, 10) - 1;
+          if (options[idx]) {
+            setSelected(options[idx]);
+            setShowResult(true);
+          }
+        }
+        // 이전 버튼: q, ㅂ (항상 동작)
+        if (e.key === 'q' || e.key === 'ㅂ') {
+          setSelected(null);
+          setShowResult(false);
+          onPrev();
+        }
+        // 다음 버튼: r, ㄱ (항상 동작)
+        if (e.key === 'r' || e.key === 'ㄱ') {
+          setSelected(null);
+          setShowResult(false);
+          onNext();
+        }
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }, [options, showResult]);
+
   const handleSelect = (option: string) => {
     if (!showResult) {
       setSelected(option);
