@@ -12,7 +12,6 @@ const LANGUAGES = [
   { code: 'JP', label: 'JP', flag: '🇯🇵', available: false },
   { code: 'TH', label: 'TH', flag: '🇹🇭', available: false },
   { code: 'CN', label: 'CN', flag: '🇨🇳', available: false },
-  { code: 'ES', label: 'ES', flag: '🇪🇸', available: false },
 ];
 
 export const Header: React.FC<HeaderProps> = ({ category, setCategory }) => {
