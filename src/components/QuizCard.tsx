@@ -31,14 +31,14 @@ export const QuizCard: React.FC<QuizCardProps> = ({ word, options, category, onN
             setShowResult(true);
           }
         }
-        // 이전 버튼: q, ㅂ (항상 동작)
-        if (e.key === 'q' || e.key === 'ㅂ') {
+        // 이전 버튼: q, Q, ㅂ (항상 동작)
+        if (e.key === 'q' || e.key === 'Q' || e.key === 'ㅂ') {
           setSelected(null);
           setShowResult(false);
           onPrev();
         }
-        // 다음 버튼: r, ㄱ (항상 동작)
-        if (e.key === 'r' || e.key === 'ㄱ') {
+        // 다음 버튼: r, R, ㄱ (항상 동작)
+        if (e.key === 'r' || e.key === 'R' || e.key === 'ㄱ') {
           setSelected(null);
           setShowResult(false);
           onNext();
