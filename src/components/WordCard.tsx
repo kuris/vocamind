@@ -24,7 +24,10 @@ export const WordCard: React.FC<WordCardProps> = ({ word, category }) => {
     <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
       <div className="text-center">
         <div className="flex items-center justify-center gap-4 mb-4">
-          <h1 className="text-5xl font-bold text-gray-800 tracking-wide">
+          <h1
+            className="text-3xl sm:text-5xl font-bold text-gray-800 tracking-wide break-words truncate max-w-[90vw] sm:max-w-xl"
+            style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+          >
             {isKoreanBasic ? word.korean : word.english}
           </h1>
           <button
