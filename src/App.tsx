@@ -46,7 +46,14 @@ function App() {
 
   // Only render loading/error/empty after all hooks
   if (wordsLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading words...</div>;
+    // words.length is updated as words are fetched
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <div className="mb-2 text-lg font-semibold text-purple-600">Loading words...</div>
+        <div className="text-sm text-gray-500">Fetched {words.length} / 예상 총 {words.length > 0 ? words.length : '...'} 단어</div>
+        <div className="mt-2 animate-pulse text-xs text-gray-400">Please wait...</div>
+      </div>
+    );
   }
   // 디버그: words와 error를 화면에 출력
   if (wordsError || !currentWord) {
