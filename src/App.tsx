@@ -20,6 +20,7 @@ function App() {
     gongmuwon: 'gongmuwon',
     gtelp: 'gtelp',
     'kr-en-basic': 'kr-en-basic',
+    'thai-conversation': 'thai-conversation',
     'random-study': 'toeic', // 기본값, 실제 랜덤은 아래에서 처리
     'random-quiz': 'toeic', // 기본값, 실제 랜덤은 아래에서 처리
   };

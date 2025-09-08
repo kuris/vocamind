@@ -59,8 +59,10 @@ export const QuizCard: React.FC<QuizCardProps> = ({ word, options, category, onN
 
   // 문제/보기 언어 분기
   const isKoreanBasic = category === 'kr-en-basic';
-  const quizQuestion = isKoreanBasic ? word.korean : word.english;
-  const correctAnswer = isKoreanBasic ? word.english : word.korean;
+  const isThaiConversation = category === 'thai-conversation';
+  // 태국어회화: 문제는 한국어 뜻, 정답은 태국어 발음
+  const quizQuestion = isThaiConversation ? word.korean : (isKoreanBasic ? word.korean : word.english);
+  const correctAnswer = isThaiConversation ? word.pronunciation : (isKoreanBasic ? word.english : word.korean);
   const isCorrect = selected === correctAnswer;
 
   return (
@@ -74,7 +76,11 @@ export const QuizCard: React.FC<QuizCardProps> = ({ word, options, category, onN
       </div>
       <div className="text-center mb-6">
         <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mb-2 break-words">{quizQuestion}</h1>
-        <p className="text-base sm:text-lg text-gray-500">{isKoreanBasic ? '다음 단어의 영어 뜻을 고르세요' : '다음 단어의 뜻을 고르세요'}</p>
+        <p className="text-base sm:text-lg text-gray-500">
+          {isThaiConversation
+            ? '한국어 뜻에 맞는 태국어 발음을 고르세요'
+            : (isKoreanBasic ? '다음 단어의 영어 뜻을 고르세요' : '다음 단어의 뜻을 고르세요')}
+        </p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
         {options.map((option, idx) => (

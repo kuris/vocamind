@@ -10,7 +10,7 @@ const LANGUAGES = [
   { code: 'US', label: 'US', flag: '🇺🇸', available: true },
   { code: 'KR', label: 'KR', flag: '🇰🇷', available: true },
   { code: 'JP', label: 'JP', flag: '🇯🇵', available: false },
-  { code: 'TH', label: 'TH', flag: '🇹🇭', available: false },
+  { code: 'TH', label: 'TH', flag: '🇹🇭', available: true },
   { code: 'CN', label: 'CN', flag: '🇨🇳', available: false },
 ];
 
@@ -18,14 +18,25 @@ export const Header: React.FC<HeaderProps> = ({ category, setCategory }) => {
   const [selectedLang, setSelectedLang] = useState('US');
   // 영어 관련 카테고리만 보여주기 (US 선택 시)
   const allCategories = [
-  { key: 'toeic', label: 'TOEIC', available: true, lang: 'US' },
-  { key: 'toefl', label: 'TOEFL', available: true, lang: 'US' },
-  { key: 'suneung', label: '수능', available: true, lang: 'US' },
-  { key: 'gongmuwon', label: '공무원', available: true, lang: 'US' },
-  { key: 'gtelp', label: 'GTELP', available: true, lang: 'US' },
-  { key: 'kr-en-basic', label: selectedLang === 'KR' ? '일반회화' : '기초한국어', available: true, lang: 'KR' },
+    { key: 'toeic', label: 'TOEIC', available: true, lang: 'US' },
+    { key: 'toefl', label: 'TOEFL', available: true, lang: 'US' },
+    { key: 'suneung', label: '수능', available: true, lang: 'US' },
+    { key: 'gongmuwon', label: '공무원', available: true, lang: 'US' },
+    { key: 'gtelp', label: 'GTELP', available: true, lang: 'US' },
+    { key: 'kr-en-basic', label: selectedLang === 'KR' ? '일반회화' : '기초한국어', available: true, lang: 'KR' },
+    { key: 'thai-conversation', label: '태국어회화', available: true, lang: 'TH' },
   ];
-  const categories = allCategories.filter(cat => selectedLang === 'US' ? cat.lang === 'US' : cat.lang === 'KR');
+  type Category = { key: string; label: string; available: boolean; lang: string };
+  let categories: Category[] = [];
+  if (selectedLang === 'US') {
+    categories = allCategories.filter(cat => cat.lang === 'US');
+  } else if (selectedLang === 'KR') {
+    categories = allCategories.filter(cat => cat.lang === 'KR');
+  } else if (selectedLang === 'TH') {
+    categories = allCategories.filter(cat => cat.lang === 'TH');
+  } else {
+    categories = [];
+  }
   return (
     <header className="bg-gradient-to-r from-purple-400 to-pink-300 shadow-lg p-4 flex flex-col items-center rounded-b-3xl">
       <div className="flex items-center gap-2 mb-2">
