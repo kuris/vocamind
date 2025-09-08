@@ -24,7 +24,15 @@ export const WordCard: React.FC<WordCardProps> = ({ word, category }) => {
     <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
       <div className="text-center">
         <div className="flex items-center justify-center gap-4 mb-4">
-            <h1 className="text-5xl font-bold text-gray-800 tracking-wide break-words max-w-[220px] mx-auto" style={{ wordBreak: 'break-word', whiteSpace: 'normal', lineHeight: '1.2' }}>
+            <h1
+              className="font-bold text-gray-800 tracking-wide break-words max-w-[220px] mx-auto"
+              style={{
+                fontSize: (isKoreanBasic ? undefined : (word.english.length > 12 ? '2.2rem' : '3rem')),
+                wordBreak: 'break-word',
+                whiteSpace: 'normal',
+                lineHeight: '1.2',
+              }}
+            >
               {isKoreanBasic ? word.korean : word.english}
             </h1>
           <button
