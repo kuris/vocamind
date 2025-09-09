@@ -150,11 +150,7 @@ function App() {
               onClick={() => setMode('random-quiz')}
             >랜덤퀴즈</button>
           </div>
-          <div className="text-center mb-4">
-            <span className="text-[11px] text-gray-400">
-              이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
-            </span>
-          </div>
+          {/* ...기존 코드... */}
           {/* 쿠팡 공식 JS 배너 코드 삽입 */}
           <div id="coupang-banner-main" style={{ minWidth: 120, minHeight: 60, margin: '0 auto' }}></div>
           <script src="https://ads-partners.coupang.com/g.js"></script>
@@ -201,10 +197,16 @@ function App() {
             <p className="text-gray-500 text-sm">
               💪 꾸준한 학습이 성공의 열쇠입니다 | Made with ❤️ for English learners
             </p>
+            {/* 쿠팡 파트너스 안내문구를 페이지 최하단에 위치 (한 번만 표시) */}
+            <div className="text-center mb-2 mt-8">
+              <span className="text-[11px] text-gray-400">
+                이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+              </span>
+            </div>
           </div>
-          {/* 쿠팡 파트너스 안내문구는 상단으로 이동됨 */}
         </div>
       </div>
+  {/* 안내문구는 위에서 한 번만 표시됨 */}
       <Analytics />
     </>
   );
