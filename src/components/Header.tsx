@@ -7,11 +7,11 @@ interface HeaderProps {
 }
 
 const LANGUAGES = [
-  { code: 'US', label: 'US', flag: '🇺🇸', available: true },
-  { code: 'KR', label: 'KR', flag: '🇰🇷', available: true },
-  { code: 'JP', label: 'JP', flag: '🇯🇵', available: false },
-  { code: 'TH', label: 'TH', flag: '🇹🇭', available: true },
-  { code: 'CN', label: 'CN', flag: '🇨🇳', available: false },
+  { code: 'US', label: 'US', flag: '/flags/us.png', available: true },
+  { code: 'KR', label: 'KR', flag: '/flags/kr.png', available: true },
+  { code: 'JP', label: 'JP', flag: '/flags/jp.png', available: false },
+  { code: 'TH', label: 'TH', flag: '/flags/th.png', available: true },
+  { code: 'CN', label: 'CN', flag: '/flags/cn.png', available: false },
 ];
 
 export const Header: React.FC<HeaderProps> = ({ category, setCategory }) => {
@@ -68,7 +68,7 @@ export const Header: React.FC<HeaderProps> = ({ category, setCategory }) => {
               disabled={!lang.available}
               onClick={() => lang.available && handleLangSelect(lang.code)}
             >
-              <span className="text-xl">{lang.flag}</span>
+              <img src={lang.flag} alt={lang.label + ' flag'} className="w-6 h-6" />
               <span>{lang.label}</span>
             </button>
           ))}
