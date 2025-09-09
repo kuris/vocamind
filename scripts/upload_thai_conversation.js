@@ -1,8 +1,11 @@
 import fs from 'fs';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://ggtydikxkfozlhnihrwr.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdndHlkaWt4a2ZvemxobmlocndyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwMzUxNzEsImV4cCI6MjA3MjYxMTE3MX0._-VDrO_v7bDeuBMSvqSa1uhnFr020qy9d4zWAg8ISu4';
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error('SUPABASE_URL and SUPABASE_KEY must be set in environment variables');
+}
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function uploadThaiConversation() {
