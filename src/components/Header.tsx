@@ -15,6 +15,13 @@ const LANGUAGES = [
 ];
 
 export const Header: React.FC<HeaderProps> = ({ category, setCategory }) => {
+  // 일반 공유하기 버튼: 소개글 + 링크
+  const handleShare = () => {
+    const intro = 'MagicVoca는 다양한 언어의 단어를 쉽고 재미있게 학습할 수 있는 서비스입니다.\n';
+    const link = window.location.href;
+    navigator.clipboard.writeText(`${intro}${link}`);
+    alert('소개글과 링크가 복사되었습니다! 친구에게 공유해보세요.');
+  };
   const [selectedLang, setSelectedLang] = useState('US');
 
   // 언어 선택 시 첫 번째 카테고리 자동 선택
@@ -54,6 +61,13 @@ export const Header: React.FC<HeaderProps> = ({ category, setCategory }) => {
       <div className="flex items-center gap-2 mb-2">
         <span className="text-3xl font-bold text-white drop-shadow">MagicVoca</span>
         <span className="text-xl">✨</span>
+        <button
+          onClick={handleShare}
+          className="ml-2 px-3 py-1 rounded-full bg-white text-purple-600 font-bold shadow hover:bg-purple-100 text-sm"
+          title="공유하기"
+        >
+          공유하기
+        </button>
       </div>
       <div className="flex flex-col items-center w-full mb-2">
         <span className="text-white font-semibold mb-1">🌐 학습 언어 선택</span>
