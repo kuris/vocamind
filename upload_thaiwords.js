@@ -6,8 +6,11 @@ import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
 import { parse } from 'csv-parse/sync';
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL || 'https://ggtydikxkfozlhnihrwr.supabase.co';
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdndHlkaWt4a2ZvemxobmlocndyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwMzUxNzEsImV4cCI6MjA3MjYxMTE3MX0._-VDrO_v7bDeuBMSvqSa1uhnFr020qy9d4zWAg8ISu4';
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error('VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY must be set in environment variables');
+}
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const csvFile = 'thaiword_db.csv';
