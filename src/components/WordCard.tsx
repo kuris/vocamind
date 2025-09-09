@@ -1,9 +1,10 @@
-// ResponsiveVoice type declaration for TypeScript
+// ResponsiveVoice & Kakao type declaration for TypeScript
 declare global {
   interface Window {
     responsiveVoice?: {
       speak: (text: string, voice?: string) => void;
     };
+    Kakao?: any;
   }
 }
 import React from 'react';
@@ -16,19 +17,46 @@ interface WordCardProps {
 }
 
 export const WordCard: React.FC<WordCardProps> = ({ word, category }) => {
+  const handleThreadsShare = () => {
+    navigator.clipboard.writeText(shareUrl);
+    alert('링크가 복사되었습니다! Threads DM 등에서 붙여넣기 하세요.');
+  };
+  // 공유 기능: 카카오톡, 인스타그램(링크 복사)
+  const shareUrl = window.location.href;
+  const shareText = `MagicVoca에서 단어를 공부해보세요!\n${word.english} - ${word.korean}`;
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(shareUrl);
+    alert('링크가 복사되었습니다! 인스타 DM 등에서 붙여넣기 하세요.');
+  };
+  const handleKakaoShare = () => {
+    if (window.Kakao && window.Kakao.Share) {
+      window.Kakao.Share.sendDefault({
+        objectType: 'feed',
+        content: {
+          title: 'MagicVoca 단어 공유',
+          description: shareText,
+          link: { mobileWebUrl: shareUrl, webUrl: shareUrl },
+          imageUrl: 'https://magicvoca.vercel.app/logo.png',
+        },
+        buttons: [
+          { title: '단어 바로가기', link: { mobileWebUrl: shareUrl, webUrl: shareUrl } },
+        ],
+      });
+    } else {
+      alert('카카오톡 공유 기능을 사용할 수 없습니다.');
+    }
+  };
   const speakWord = () => {
     if ('speechSynthesis' in window) {
       let text = word.english;
       let lang = 'en-US';
-      if (category === 'kr-en-basic') {
-        text = word.english;
-        lang = 'en-US';
+      // 일반회화(kr-en-basic 또는 '일반회화')는 한국어를 읽어야 함
+      if (category === 'kr-en-basic' || category === '일반회화') {
+        text = word.korean;
+        lang = 'ko-KR';
       } else if (category === 'thai-conversation') {
         text = word.english;
         lang = 'th-TH';
-      } else if (category === 'kr-en-basic' || category === '일반회화') {
-        text = word.korean;
-        lang = 'ko-KR';
       }
       const utterance = new window.SpeechSynthesisUtterance(text);
       utterance.lang = lang;
