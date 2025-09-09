@@ -169,6 +169,11 @@ function App() {
               💪 꾸준한 학습이 성공의 열쇠입니다 | Made with ❤️ for English learners
             </p>
           </div>
+          <div className="text-center mt-4 mb-2">
+            <p className="text-xs text-gray-400">
+              이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+            </p>
+          </div>
         </div>
       </div>
       <Analytics />
