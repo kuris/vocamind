@@ -110,7 +110,29 @@ function App() {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           <Header category={tab} setCategory={setTab} />
-          <div className="flex gap-2 mb-6 justify-end">
+          {/* 모바일에서만 쿠팡 배너 노출 */}
+          <div className="flex items-center gap-2 mb-2 justify-center sm:hidden">
+            <div id="coupang-banner-left" style={{ minWidth: 120, minHeight: 60 }}></div>
+            <button
+              className={`px-4 py-2 rounded-lg font-bold ${mode === 'study' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              onClick={() => setMode('study')}
+            >학습</button>
+            <button
+              className={`px-4 py-2 rounded-lg font-bold ${mode === 'quiz' ? 'bg-purple-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              onClick={() => setMode('quiz')}
+            >퀴즈</button>
+            <button
+              className={`px-4 py-2 rounded-lg font-bold ${mode === 'random-study' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              onClick={() => setMode('random-study')}
+            >랜덤학습</button>
+            <button
+              className={`px-4 py-2 rounded-lg font-bold ${mode === 'random-quiz' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              onClick={() => setMode('random-quiz')}
+            >랜덤퀴즈</button>
+            <div id="coupang-banner-right" style={{ minWidth: 120, minHeight: 60 }}></div>
+          </div>
+          {/* 데스크탑에서는 기존 버튼만 노출 */}
+          <div className="flex gap-2 mb-2 justify-end hidden sm:flex">
             <button
               className={`px-4 py-2 rounded-lg font-bold ${mode === 'study' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
               onClick={() => setMode('study')}
@@ -128,6 +150,17 @@ function App() {
               onClick={() => setMode('random-quiz')}
             >랜덤퀴즈</button>
           </div>
+          <div className="text-center mb-4">
+            <span className="text-[11px] text-gray-400">
+              이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+            </span>
+          </div>
+          {/* 쿠팡 공식 JS 배너 코드 삽입 */}
+          <div id="coupang-banner-main" style={{ minWidth: 120, minHeight: 60, margin: '0 auto' }}></div>
+          <script src="https://ads-partners.coupang.com/g.js"></script>
+          <script dangerouslySetInnerHTML={{__html:`
+            new PartnersCoupang.G({"id":919460,"template":"banner","trackingCode":"AF4296930","width":"120","height":"60","target":"coupang-banner-main"});
+          `}} />
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
               <p className="font-medium">오류가 발생했습니다:</p>
@@ -169,11 +202,7 @@ function App() {
               💪 꾸준한 학습이 성공의 열쇠입니다 | Made with ❤️ for English learners
             </p>
           </div>
-          <div className="text-center mt-4 mb-2">
-            <p className="text-xs text-gray-400">
-              이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
-            </p>
-          </div>
+          {/* 쿠팡 파트너스 안내문구는 상단으로 이동됨 */}
         </div>
       </div>
       <Analytics />

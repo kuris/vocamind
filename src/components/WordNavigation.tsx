@@ -24,8 +24,18 @@ export const WordNavigation: React.FC<WordNavigationProps> = ({
         <span className="text-gray-400">/</span>
         <span>{totalWords}</span>
       </div>
-      
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 w-full justify-center">
+        {/* 모바일에서만 쿠팡 이미지 배너 노출 */}
+        <a
+          href="https://link.coupang.com/a/cPIks9"
+          target="_blank"
+          rel="noopener noreferrer"
+          referrerPolicy="unsafe-url"
+          className="sm:hidden"
+          style={{ minWidth: 120, minHeight: 60 }}
+        >
+          <img src="https://ads-partners.coupang.com/banners/919460?subId=&traceId=V0-301-f5c692db558def48-I919460&w=120&h=60" alt="쿠팡배너" style={{ width: 120, height: 60 }} />
+        </a>
         <button
           onClick={onPrevious}
           className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 text-gray-700 hover:text-blue-600 border border-gray-200"
@@ -33,9 +43,6 @@ export const WordNavigation: React.FC<WordNavigationProps> = ({
           <ChevronLeft size={20} />
           <span className="hidden sm:inline">이전</span>
         </button>
-        
-  {/* 랜덤 버튼 완전히 제거 */}
-        
         <button
           onClick={onNext}
           className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 text-gray-700 hover:text-blue-600 border border-gray-200"
@@ -43,6 +50,16 @@ export const WordNavigation: React.FC<WordNavigationProps> = ({
           <span className="hidden sm:inline">다음</span>
           <ChevronRight size={20} />
         </button>
+        <a
+          href="https://link.coupang.com/a/cPIks9"
+          target="_blank"
+          rel="noopener noreferrer"
+          referrerPolicy="unsafe-url"
+          className="sm:hidden"
+          style={{ minWidth: 120, minHeight: 60 }}
+        >
+          <img src="https://ads-partners.coupang.com/banners/919460?subId=&traceId=V0-301-f5c692db558def48-I919460&w=120&h=60" alt="쿠팡배너" style={{ width: 120, height: 60 }} />
+        </a>
       </div>
     </div>
   );
