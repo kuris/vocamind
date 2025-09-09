@@ -108,53 +108,53 @@ function App() {
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="container mx-auto px-4 pt-6 pb-1 max-w-4xl">
           <Header category={tab} setCategory={setTab} />
           {/* 모바일에서만 쿠팡 배너 노출 */}
-          <div className="flex items-center gap-1 mb-2 justify-center sm:hidden">
+          <div className="flex items-center gap-0.5 mb-0 justify-center sm:hidden">
             <div id="coupang-banner-left" style={{ minWidth: 120, minHeight: 60 }}></div>
             <button
-              className={`px-2 py-1 rounded-lg font-bold text-xs ${mode === 'study' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
-              style={{ minWidth: 44 }}
+              className={`px-1.5 py-0.5 rounded-lg font-bold text-xs ${mode === 'study' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              style={{ minWidth: 40 }}
               onClick={() => setMode('study')}
             >학습</button>
             <button
-              className={`px-2 py-1 rounded-lg font-bold text-xs ${mode === 'quiz' ? 'bg-purple-500 text-white' : 'bg-gray-100 text-gray-700'}`}
-              style={{ minWidth: 44 }}
+              className={`px-1.5 py-0.5 rounded-lg font-bold text-xs ${mode === 'quiz' ? 'bg-purple-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              style={{ minWidth: 40 }}
               onClick={() => setMode('quiz')}
             >퀴즈</button>
             <button
-              className={`px-2 py-1 rounded-lg font-bold text-xs ${mode === 'random-study' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700'}`}
-              style={{ minWidth: 60 }}
+              className={`px-1.5 py-0.5 rounded-lg font-bold text-xs ${mode === 'random-study' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              style={{ minWidth: 54 }}
               onClick={() => setMode('random-study')}
             >랜덤학습</button>
             <button
-              className={`px-2 py-1 rounded-lg font-bold text-xs ${mode === 'random-quiz' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-700'}`}
-              style={{ minWidth: 60 }}
+              className={`px-1.5 py-0.5 rounded-lg font-bold text-xs ${mode === 'random-quiz' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              style={{ minWidth: 54 }}
               onClick={() => setMode('random-quiz')}
             >랜덤퀴즈</button>
             <div id="coupang-banner-right" style={{ minWidth: 120, minHeight: 60 }}></div>
           </div>
           {/* 데스크탑에서는 기존 버튼만 노출 */}
-          <div className="flex gap-1 mb-2 justify-end hidden sm:flex">
+          <div className="flex gap-0.5 mb-0 justify-end hidden sm:flex">
             <button
-              className={`px-2 py-1 rounded-lg font-bold text-xs ${mode === 'study' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
-              style={{ minWidth: 44 }}
+              className={`px-1.5 py-0.5 rounded-lg font-bold text-xs ${mode === 'study' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              style={{ minWidth: 40 }}
               onClick={() => setMode('study')}
             >학습</button>
             <button
-              className={`px-2 py-1 rounded-lg font-bold text-xs ${mode === 'quiz' ? 'bg-purple-500 text-white' : 'bg-gray-100 text-gray-700'}`}
-              style={{ minWidth: 44 }}
+              className={`px-1.5 py-0.5 rounded-lg font-bold text-xs ${mode === 'quiz' ? 'bg-purple-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              style={{ minWidth: 40 }}
               onClick={() => setMode('quiz')}
             >퀴즈</button>
             <button
-              className={`px-2 py-1 rounded-lg font-bold text-xs ${mode === 'random-study' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700'}`}
-              style={{ minWidth: 60 }}
+              className={`px-1.5 py-0.5 rounded-lg font-bold text-xs ${mode === 'random-study' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              style={{ minWidth: 54 }}
               onClick={() => setMode('random-study')}
             >랜덤학습</button>
             <button
-              className={`px-2 py-1 rounded-lg font-bold text-xs ${mode === 'random-quiz' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-700'}`}
-              style={{ minWidth: 60 }}
+              className={`px-1.5 py-0.5 rounded-lg font-bold text-xs ${mode === 'random-quiz' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              style={{ minWidth: 54 }}
               onClick={() => setMode('random-quiz')}
             >랜덤퀴즈</button>
           </div>
