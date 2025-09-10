@@ -4,6 +4,64 @@ import { Word } from '../types';
 
 const WORDS_PER_PAGE = 50;
 
+// 해시태그(다중 카테고리) 로드 함수
+async function loadHashtagsForWords(words: Word[]) {
+  try {
+    const wordIds = words.map(w => w.id);
+    console.log('=== 해시태그 로드 시작 ===');
+    console.log('단어 IDs:', wordIds.slice(0, 5));
+    
+    // word_categories에서 해당 단어들의 카테고리 정보 가져오기
+    const { data: wordCategoriesData, error: wcError } = await supabase
+      .from('word_categories')
+      .select('word_id, category_id')
+      .in('word_id', wordIds);
+    
+    console.log('word_categories 데이터:', wordCategoriesData?.length || 0, '개');
+    console.log('word_categories 샘플:', wordCategoriesData?.slice(0, 3));
+    
+    if (wcError) {
+      console.error('Error loading hashtags:', wcError);
+      return;
+    }
+    
+    // categories 테이블에서 카테고리 이름 가져오기
+    const { data: categoriesData, error: catError } = await supabase
+      .from('categories')
+      .select('id, name');
+    
+    console.log('categories 데이터:', categoriesData?.length || 0, '개');
+    console.log('categories 샘플:', categoriesData?.slice(0, 3));
+    
+    if (catError) {
+      console.error('Error loading categories:', catError);
+      return;
+    }
+    
+    // 카테고리 맵 생성
+    const categoryMap = new Map();
+    categoriesData?.forEach((cat: any) => {
+      categoryMap.set(cat.id, cat.name);
+    });
+    
+    // 각 단어에 해시태그 추가
+    let hashtagCount = 0;
+    words.forEach(word => {
+      const wordCategories = wordCategoriesData?.filter(wc => wc.word_id === word.id) || [];
+      word.categories = wordCategories.map(wc => categoryMap.get(wc.category_id)).filter(Boolean);
+      if (word.categories.length > 0) {
+        hashtagCount++;
+      }
+    });
+    
+    console.log(`해시태그 추가 완료: ${hashtagCount}개 단어에 해시태그 적용`);
+    console.log('첫 번째 단어 해시태그:', words[0]?.categories);
+    
+  } catch (error) {
+    console.error('Error in loadHashtagsForWords:', error);
+  }
+}
+
 export function useWords(category: string) {
   const [words, setWords] = useState<Word[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,8 +77,10 @@ export function useWords(category: string) {
       setError(null);
       
       try {
-        // 한국어와 태국어는 기존 운영사이트 방식 사용 (category 컬럼으로 직접 필터링)
-        if (category === 'kr-en-basic' || category === 'thai-conversation') {
+        // 한국어와 태국어, TOEIC, 수능, TOEFL, 공무원, GTELP은 기존 운영사이트 방식 사용 (category 컬럼으로 직접 필터링)
+        if (category === 'kr-en-basic' || category === 'thai-conversation' || 
+            category === 'toeic' || category === 'suneung' || 
+            category === 'toefl' || category === 'gongmuwon' || category === 'gtelp') {
           console.log(`Loading ${category} words using legacy method`);
           
           // 기존 방식: category 컬럼으로 직접 필터링
@@ -45,8 +105,40 @@ export function useWords(category: string) {
             pronunciation: w.pronunciation,
             partOfSpeech: w.part_of_speech,
             tip: w.tip,
-            categories: [] // 한국어/태국어는 카테고리 해시태그 표시 안 함
+            categories: [] // 해시태그는 별도로 로드
           }));
+
+          // 해시태그(다중 카테고리) 정보 추가 로드
+          if (firstWords.length > 0) {
+            await loadHashtagsForWords(firstWords);
+          }
+
+          // 디버깅: 일반 학습 모드에서의 데이터 순서 확인
+          console.log(`=== ${category} 일반 학습 모드 디버깅 ===`);
+          console.log('첫 10개 단어의 ID와 데이터:');
+          firstWords.slice(0, 10).forEach((word, index) => {
+            console.log(`Index ${index}: ID=${word.id}, English="${word.english}", Korean="${word.korean}"`);
+          });
+          
+          // ID 1, 2, 3번 단어 특별 확인
+          [1, 2, 3].forEach(id => {
+            const word = firstWords.find(w => w.id === id);
+            if (word) {
+              console.log(`ID ${id} 찾음: English="${word.english}", Korean="${word.korean}"`);
+            } else {
+              console.log(`ID ${id} 없음`);
+            }
+          });
+
+          // 디버깅: 데이터베이스에서 가져온 원본 데이터 확인
+          console.log('useWords - Raw data from database (first 3):', firstData?.slice(0, 3));
+          console.log('useWords - Mapped words (first 3):', firstWords.slice(0, 3));
+          
+          // ID 2번 단어 특별 확인
+          const rawWord2 = firstData?.find((w: any) => w.id === 2);
+          const mappedWord2 = firstWords.find(w => w.id === 2);
+          console.log('useWords - Raw word ID 2:', rawWord2);
+          console.log('useWords - Mapped word ID 2:', mappedWord2);
 
           console.log(`${category} words loaded: ${firstWords.length} words`);
           setWords(firstWords);
