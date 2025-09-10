@@ -19,14 +19,17 @@ LIMIT 10;
 -- 2. 카테고리가 없다면 생성
 -- ========================================
 
--- 필요한 카테고리들 생성 (이미 있다면 에러 무시)
-INSERT INTO categories (name) VALUES 
-('toeic'),
-('toefl'), 
-('suneung'),
-('gongmuwon'),
-('gtelp')
-ON CONFLICT (name) DO NOTHING;
+-- 필요한 카테고리들 생성 (이미 있다면 무시)
+INSERT INTO categories (name) 
+SELECT 'toeic' WHERE NOT EXISTS (SELECT 1 FROM categories WHERE name = 'toeic')
+UNION ALL
+SELECT 'toefl' WHERE NOT EXISTS (SELECT 1 FROM categories WHERE name = 'toefl')
+UNION ALL
+SELECT 'suneung' WHERE NOT EXISTS (SELECT 1 FROM categories WHERE name = 'suneung')
+UNION ALL
+SELECT 'gongmuwon' WHERE NOT EXISTS (SELECT 1 FROM categories WHERE name = 'gongmuwon')
+UNION ALL
+SELECT 'gtelp' WHERE NOT EXISTS (SELECT 1 FROM categories WHERE name = 'gtelp');
 
 -- ========================================
 -- 3. TOEIC 단어들에 해시태그 추가

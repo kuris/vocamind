@@ -29,18 +29,34 @@ function App() {
   const category = tabToCategory[tab];
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const { words, loading: wordsLoading, error: wordsError, totalWords } = useWords(category);
-  const currentWord = words[currentWordIndex];
+  
+  // currentWordIndex가 words 범위를 벗어나지 않도록 보정
+  const safeCurrentIndex = words.length > 0 ? Math.min(currentWordIndex, words.length - 1) : 0;
+  const currentWord = words[safeCurrentIndex];
+  
+  // 인덱스가 범위를 벗어났을 때 보정
+  React.useEffect(() => {
+    if (words.length > 0 && currentWordIndex >= words.length) {
+      console.log(`인덱스 보정: ${currentWordIndex} -> ${words.length - 1} (총 ${words.length}개 단어)`);
+      setCurrentWordIndex(words.length - 1);
+    }
+  }, [words.length, currentWordIndex]);
 
   // 단어 리스트가 바뀔 때마다 인덱스 초기화 (랜덤탭이면 랜덤)
   React.useEffect(() => {
     if (words.length > 0) {
+      console.log(`모드 변경/단어 로드: mode=${mode}, category=${category}, words.length=${words.length}`);
       if (mode === 'random-study' || mode === 'random-quiz') {
-        setCurrentWordIndex(Math.floor(Math.random() * words.length));
+        // 랜덤 모드: 현재 카테고리 내에서 랜덤 인덱스 생성
+        const randomIndex = Math.floor(Math.random() * words.length);
+        console.log(`랜덤 모드 초기화: ${category} 카테고리에서 ${words.length}개 단어 중 ${randomIndex}번째 선택`);
+        setCurrentWordIndex(randomIndex);
       } else {
+        console.log(`일반 모드 초기화: 첫 번째 단어로 설정`);
         setCurrentWordIndex(0);
       }
     }
-  }, [words, mode]);
+  }, [words, mode, category]);
   // Always call useComments, even if currentWord is undefined
   const { comments, loading, error, addComment, deleteComment, refetch } = useComments(currentWord?.id);
 
@@ -69,8 +85,13 @@ function App() {
   }
 
   const handlePrevious = () => {
+    if (words.length === 0) return; // 단어가 없으면 리턴
+    
     if (mode === 'random-study' || mode === 'random-quiz') {
-      setCurrentWordIndex(Math.floor(Math.random() * words.length));
+      // 랜덤 모드: 현재 카테고리 내에서 새로운 랜덤 단어 선택
+      const randomIndex = Math.floor(Math.random() * words.length);
+      console.log(`랜덤 이전: ${category} 카테고리에서 총 ${words.length}개 단어 중 ${randomIndex}번째 선택`);
+      setCurrentWordIndex(randomIndex);
     } else {
       setCurrentWordIndex((prev) => {
         if (prev === 0) {
@@ -82,8 +103,13 @@ function App() {
   };
 
   const handleNext = () => {
+    if (words.length === 0) return; // 단어가 없으면 리턴
+    
     if (mode === 'random-study' || mode === 'random-quiz') {
-      setCurrentWordIndex(Math.floor(Math.random() * words.length));
+      // 랜덤 모드: 현재 카테고리 내에서 새로운 랜덤 단어 선택
+      const randomIndex = Math.floor(Math.random() * words.length);
+      console.log(`랜덤 다음: ${category} 카테고리에서 총 ${words.length}개 단어 중 ${randomIndex}번째 선택`);
+      setCurrentWordIndex(randomIndex);
     } else {
       setCurrentWordIndex((prev) => {
         if (prev === words.length - 1) {

@@ -7,56 +7,51 @@ const WORDS_PER_PAGE = 50;
 // 해시태그(다중 카테고리) 로드 함수
 async function loadHashtagsForWords(words: Word[]) {
   try {
-    const wordIds = words.map(w => w.id);
+    const englishWords = words.map(w => w.english);
     console.log('=== 해시태그 로드 시작 ===');
-    console.log('단어 IDs:', wordIds.slice(0, 5));
+    console.log('영어 단어들:', englishWords.slice(0, 5));
     
-    // word_categories에서 해당 단어들의 카테고리 정보 가져오기
-    const { data: wordCategoriesData, error: wcError } = await supabase
-      .from('word_categories')
-      .select('word_id, category_id')
-      .in('word_id', wordIds);
+    // word_hashtags에서 해당 단어들의 해시태그 정보 가져오기
+    const { data: hashtagData, error: hashtagError } = await supabase
+      .from('word_hashtags')
+      .select('english, hashtag')
+      .in('english', englishWords);
     
-    console.log('word_categories 데이터:', wordCategoriesData?.length || 0, '개');
-    console.log('word_categories 샘플:', wordCategoriesData?.slice(0, 3));
+    console.log('word_hashtags 데이터:', hashtagData?.length || 0, '개');
+    console.log('word_hashtags 샘플:', hashtagData?.slice(0, 5));
     
-    if (wcError) {
-      console.error('Error loading hashtags:', wcError);
+    if (hashtagError) {
+      console.error('Error loading hashtags:', hashtagError);
       return;
     }
-    
-    // categories 테이블에서 카테고리 이름 가져오기
-    const { data: categoriesData, error: catError } = await supabase
-      .from('categories')
-      .select('id, name');
-    
-    console.log('categories 데이터:', categoriesData?.length || 0, '개');
-    console.log('categories 샘플:', categoriesData?.slice(0, 3));
-    
-    if (catError) {
-      console.error('Error loading categories:', catError);
-      return;
-    }
-    
-    // 카테고리 맵 생성
-    const categoryMap = new Map();
-    categoriesData?.forEach((cat: any) => {
-      categoryMap.set(cat.id, cat.name);
+
+    // 단어별로 해시태그 그룹화
+    const hashtagMap = new Map<string, string[]>();
+    hashtagData?.forEach(item => {
+      if (!hashtagMap.has(item.english)) {
+        hashtagMap.set(item.english, []);
+      }
+      hashtagMap.get(item.english)!.push(item.hashtag);
     });
-    
-    // 각 단어에 해시태그 추가
-    let hashtagCount = 0;
+
+    console.log('해시태그 맵 생성 완료, 단어 수:', hashtagMap.size);
+    console.log('샘플 해시태그:', Array.from(hashtagMap.entries()).slice(0, 3));
+
+    // words 배열에 해시태그 추가
+    let successCount = 0;
     words.forEach(word => {
-      const wordCategories = wordCategoriesData?.filter(wc => wc.word_id === word.id) || [];
-      word.categories = wordCategories.map(wc => categoryMap.get(wc.category_id)).filter(Boolean);
-      if (word.categories.length > 0) {
-        hashtagCount++;
+      const hashtags = hashtagMap.get(word.english) || [];
+      (word as any).hashtags = hashtags;
+      if (hashtags.length > 0) {
+        successCount++;
+        if (successCount <= 3) { // 처음 3개만 로그
+          console.log(`${word.english}: ${hashtags.join(', ')}`);
+        }
       }
     });
-    
-    console.log(`해시태그 추가 완료: ${hashtagCount}개 단어에 해시태그 적용`);
-    console.log('첫 번째 단어 해시태그:', words[0]?.categories);
-    
+
+    console.log(`해시태그 할당 완료: ${successCount}/${words.length} 단어에 해시태그 적용`);
+    console.log('=== 해시태그 로드 완료 ===');
   } catch (error) {
     console.error('Error in loadHashtagsForWords:', error);
   }
@@ -325,8 +320,13 @@ export function useWords(category: string) {
               pronunciation: w.pronunciation,
               partOfSpeech: w.part_of_speech,
               tip: w.tip,
-              categories: [] // 한국어/태국어는 카테고리 해시태그 표시 안 함
+              categories: [] // 해시태그는 별도로 로드
             }));
+
+            // 백그라운드 로드된 단어들에도 해시태그 추가
+            if (newWords.length > 0) {
+              await loadHashtagsForWords(newWords);
+            }
 
             allWords = allWords.concat(newWords);
             setWords([...allWords]); // 실시간으로 추가
@@ -406,7 +406,6 @@ export function useWords(category: string) {
     if (loadingMore || !hasMore) return;
 
     setLoadingMore(true);
-    const currentLength = words.length;
     const nextBatch = allWordsData.slice(0, WORDS_PER_PAGE);
     
     if (nextBatch.length > 0) {

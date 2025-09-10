@@ -73,30 +73,30 @@ export const WordCard: React.FC<WordCardProps> = ({ word, category }) => {
   const isKoreanBasic = category === 'kr-en-basic';
   const isThaiConversation = category === 'thai-conversation';
 
-  // 카테고리 이름을 한글로 변환하는 함수
-  const getCategoryDisplayName = (categoryName: string): string => {
-    const categoryMap: { [key: string]: string } = {
-      'TOEIC': '토익',
-      'TOEFL': '토플',
-      'SUNEUNG': '수능',
-      'GONGMUWON': '공무원',
-      'GTELP': '지텔프'
+  // 해시태그를 한글로 변환하는 함수
+  const getHashtagDisplayName = (hashtag: string): string => {
+    const hashtagMap: { [key: string]: string } = {
+      'toeic': '토익',
+      'toefl': '토플',
+      'suneung': '수능',
+      'gongmuwon': '공무원',
+      'gtelp': '지텔프'
     };
-    return categoryMap[categoryName.toUpperCase()] || categoryName;
+    return hashtagMap[hashtag.toLowerCase()] || hashtag;
   };
 
   return (
     <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
       <div className="text-center">
-        {/* 카테고리 해시태그 표시 (한국어/태국어는 제외) */}
-        {word.categories && word.categories.length > 0 && (
+        {/* 해시태그 표시 */}
+        {(word as any).hashtags && (word as any).hashtags.length > 0 && (
           <div className="flex flex-wrap justify-center gap-1 mb-2">
-            {word.categories.map((cat, index) => (
+            {(word as any).hashtags.map((hashtag: string, index: number) => (
               <span 
                 key={index}
                 className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full"
               >
-                #{getCategoryDisplayName(cat)}
+                #{getHashtagDisplayName(hashtag)}
               </span>
             ))}
           </div>
