@@ -28,7 +28,7 @@ function App() {
   // mode에 따라 tab을 자동으로 맞추는 대신, tab은 카테고리만 담당
   const category = tabToCategory[tab];
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const { words, loading: wordsLoading, error: wordsError } = useWords(category);
+  const { words, loading: wordsLoading, error: wordsError, totalWords } = useWords(category);
   const currentWord = words[currentWordIndex];
 
   // 단어 리스트가 바뀔 때마다 인덱스 초기화 (랜덤탭이면 랜덤)
@@ -175,7 +175,7 @@ function App() {
             <>
               <WordNavigation
                 currentIndex={currentWordIndex}
-                totalWords={words.length}
+                totalWords={totalWords || words.length}
                 onPrevious={handlePrevious}
                 onNext={handleNext}
               />
@@ -198,7 +198,7 @@ function App() {
               onNext={handleNext}
               onPrev={handlePrevious}
               currentIndex={currentWordIndex}
-              total={words.length}
+              total={totalWords || words.length}
             />
           )}
           <div className="text-center mt-12 pt-8 border-t border-gray-200">

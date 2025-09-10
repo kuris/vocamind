@@ -76,6 +76,20 @@ export const WordCard: React.FC<WordCardProps> = ({ word, category }) => {
   return (
     <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
       <div className="text-center">
+        {/* 카테고리 해시태그 표시 (한국어/태국어는 제외) */}
+        {word.categories && word.categories.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-2 mb-4">
+            {word.categories.map((cat, index) => (
+              <span 
+                key={index}
+                className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full"
+              >
+                #{cat}
+              </span>
+            ))}
+          </div>
+        )}
+        
         <div className="flex items-center justify-center gap-4 mb-4">
           <h1
             className="font-bold text-gray-800 tracking-wide mx-auto text-2xl sm:text-5xl sm:max-w-none max-w-[220px] break-words sm:whitespace-nowrap whitespace-normal"
