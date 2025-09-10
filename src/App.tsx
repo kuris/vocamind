@@ -108,63 +108,37 @@ function App() {
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-        <div className="container mx-auto px-4 pt-6 pb-1 max-w-4xl">
+        <div className="container mx-auto px-4 pt-2 pb-1 max-w-4xl">
           <Header category={tab} setCategory={setTab} />
-          {/* 모바일에서만 쿠팡 배너 노출 */}
-          <div className="flex items-center gap-0.5 mb-0 justify-center sm:hidden">
-            <div id="coupang-banner-left" style={{ minWidth: 120, minHeight: 60 }}></div>
+          {/* 모드 버튼 */}
+          <div className="flex gap-1 sm:gap-2 mb-2 justify-center">
             <button
-              className={`px-1.5 py-0.5 rounded-lg font-bold text-xs ${mode === 'study' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              className={`px-1.5 sm:px-4 py-0.5 sm:py-2 rounded-lg font-bold text-xs sm:text-sm ${mode === 'study' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
               style={{ minWidth: 40 }}
               onClick={() => setMode('study')}
             >학습</button>
             <button
-              className={`px-1.5 py-0.5 rounded-lg font-bold text-xs ${mode === 'quiz' ? 'bg-purple-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              className={`px-1.5 sm:px-4 py-0.5 sm:py-2 rounded-lg font-bold text-xs sm:text-sm ${mode === 'quiz' ? 'bg-purple-500 text-white' : 'bg-gray-100 text-gray-700'}`}
               style={{ minWidth: 40 }}
               onClick={() => setMode('quiz')}
             >퀴즈</button>
             <button
-              className={`px-1.5 py-0.5 rounded-lg font-bold text-xs ${mode === 'random-study' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              className={`px-1.5 sm:px-4 py-0.5 sm:py-2 rounded-lg font-bold text-xs sm:text-sm ${mode === 'random-study' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700'}`}
               style={{ minWidth: 54 }}
               onClick={() => setMode('random-study')}
             >랜덤학습</button>
             <button
-              className={`px-1.5 py-0.5 rounded-lg font-bold text-xs ${mode === 'random-quiz' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+              className={`px-1.5 sm:px-4 py-0.5 sm:py-2 rounded-lg font-bold text-xs sm:text-sm ${mode === 'random-quiz' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-700'}`}
               style={{ minWidth: 54 }}
               onClick={() => setMode('random-quiz')}
             >랜덤퀴즈</button>
+          </div>
+          
+          {/* 쿠팡 배너 */}
+          <div className="flex justify-center gap-4 mb-2">
+            <div id="coupang-banner-left" style={{ minWidth: 120, minHeight: 60 }}></div>
             <div id="coupang-banner-right" style={{ minWidth: 120, minHeight: 60 }}></div>
           </div>
-          {/* 데스크탑에서는 기존 버튼만 노출 */}
-          <div className="flex gap-0.5 mb-0 justify-end hidden sm:flex">
-            <button
-              className={`px-1.5 py-0.5 rounded-lg font-bold text-xs ${mode === 'study' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
-              style={{ minWidth: 40 }}
-              onClick={() => setMode('study')}
-            >학습</button>
-            <button
-              className={`px-1.5 py-0.5 rounded-lg font-bold text-xs ${mode === 'quiz' ? 'bg-purple-500 text-white' : 'bg-gray-100 text-gray-700'}`}
-              style={{ minWidth: 40 }}
-              onClick={() => setMode('quiz')}
-            >퀴즈</button>
-            <button
-              className={`px-1.5 py-0.5 rounded-lg font-bold text-xs ${mode === 'random-study' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700'}`}
-              style={{ minWidth: 54 }}
-              onClick={() => setMode('random-study')}
-            >랜덤학습</button>
-            <button
-              className={`px-1.5 py-0.5 rounded-lg font-bold text-xs ${mode === 'random-quiz' ? 'bg-pink-500 text-white' : 'bg-gray-100 text-gray-700'}`}
-              style={{ minWidth: 54 }}
-              onClick={() => setMode('random-quiz')}
-            >랜덤퀴즈</button>
-          </div>
-          {/* ...기존 코드... */}
-          {/* 쿠팡 공식 JS 배너 코드 삽입 */}
-          <div id="coupang-banner-main" style={{ minWidth: 120, minHeight: 60, margin: '0 auto' }}></div>
-          <script src="https://ads-partners.coupang.com/g.js"></script>
-          <script dangerouslySetInnerHTML={{__html:`
-            new PartnersCoupang.G({"id":919460,"template":"banner","trackingCode":"AF4296930","width":"120","height":"60","target":"coupang-banner-main"});
-          `}} />
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
               <p className="font-medium">오류가 발생했습니다:</p>

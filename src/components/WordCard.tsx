@@ -90,7 +90,7 @@ export const WordCard: React.FC<WordCardProps> = ({ word, category }) => {
       <div className="text-center">
         {/* 카테고리 해시태그 표시 (한국어/태국어는 제외) */}
         {word.categories && word.categories.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-2 mb-4">
+          <div className="flex flex-wrap justify-center gap-1 mb-2">
             {word.categories.map((cat, index) => (
               <span 
                 key={index}

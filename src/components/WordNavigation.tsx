@@ -17,7 +17,7 @@ export const WordNavigation: React.FC<WordNavigationProps> = ({
   // onRandom 제거
 }) => {
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-2 -mt-12">
       <div className="flex items-center gap-2 text-lg font-semibold text-gray-700">
         <BookOpen className="text-blue-500" size={24} />
         <span>{currentIndex + 1}</span>
@@ -25,13 +25,12 @@ export const WordNavigation: React.FC<WordNavigationProps> = ({
         <span>{totalWords}</span>
       </div>
       <div className="flex items-center gap-3 w-full justify-center">
-        {/* 모바일에서만 쿠팡 이미지 배너 노출 */}
+        {/* 쿠팡 이미지 배너 (모바일/데스크탑 모두 노출) */}
         <a
           href="https://link.coupang.com/a/cPIks9"
           target="_blank"
           rel="noopener noreferrer"
           referrerPolicy="unsafe-url"
-          className="sm:hidden"
           style={{ minWidth: 120, minHeight: 60 }}
         >
           <img src="https://ads-partners.coupang.com/banners/919460?subId=&traceId=V0-301-f5c692db558def48-I919460&w=120&h=60" alt="쿠팡배너" style={{ width: 120, height: 60 }} />
