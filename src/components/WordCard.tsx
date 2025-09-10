@@ -73,6 +73,18 @@ export const WordCard: React.FC<WordCardProps> = ({ word, category }) => {
   const isKoreanBasic = category === 'kr-en-basic';
   const isThaiConversation = category === 'thai-conversation';
 
+  // 카테고리 이름을 한글로 변환하는 함수
+  const getCategoryDisplayName = (categoryName: string): string => {
+    const categoryMap: { [key: string]: string } = {
+      'TOEIC': '토익',
+      'TOEFL': '토플',
+      'SUNEUNG': '수능',
+      'GONGMUWON': '공무원',
+      'GTELP': '지텔프'
+    };
+    return categoryMap[categoryName.toUpperCase()] || categoryName;
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
       <div className="text-center">
@@ -84,7 +96,7 @@ export const WordCard: React.FC<WordCardProps> = ({ word, category }) => {
                 key={index}
                 className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full"
               >
-                #{cat}
+                #{getCategoryDisplayName(cat)}
               </span>
             ))}
           </div>
