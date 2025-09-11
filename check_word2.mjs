@@ -1,8 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const supabase = createClient(
-  'https://nzzwomawuqevbvlsqkny.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56endvbWF3dXFldmJ2bHNxa255Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjU0OTcxMzQsImV4cCI6MjA0MTA3MzEzNH0.VpBrCIKGsXJJk49VQKjzrC8JW0RJJCpGOQ9XPdkDPNU'
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_KEY
 );
 
 async function checkWord2() {
