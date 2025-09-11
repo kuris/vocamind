@@ -11,23 +11,69 @@ async function loadHashtagsForWords(words: Word[]) {
     console.log('=== 해시태그 로드 시작 ===');
     console.log('영어 단어들:', englishWords.slice(0, 5));
     
-    // word_hashtags에서 해당 단어들의 해시태그 정보 가져오기
-    const { data: hashtagData, error: hashtagError } = await supabase
-      .from('word_hashtags')
-      .select('english, hashtag')
-      .in('english', englishWords);
-    
-    console.log('word_hashtags 데이터:', hashtagData?.length || 0, '개');
-    console.log('word_hashtags 샘플:', hashtagData?.slice(0, 5));
-    
-    if (hashtagError) {
-      console.error('Error loading hashtags:', hashtagError);
-      return;
+    // 단어 리스트를 작은 청크로 나누어 여러 번 요청 (URL 길이 제한 해결)
+    const CHUNK_SIZE = 20; // 한 번에 20개씩 요청 (안정성 향상)
+    const chunks = [];
+    for (let i = 0; i < englishWords.length; i += CHUNK_SIZE) {
+      chunks.push(englishWords.slice(i, i + CHUNK_SIZE));
     }
+    
+    console.log(`총 ${englishWords.length}개 단어를 ${chunks.length}개 청크로 분할하여 요청`);
+    
+    let allHashtagData: any[] = [];
+    
+    // 각 청크별로 순차적으로 요청 (재시도 로직 포함)
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      console.log(`청크 ${i + 1}/${chunks.length} 요청 중... (${chunk.length}개 단어)`);
+      
+      let retryCount = 0;
+      const maxRetries = 3;
+      let success = false;
+      
+      while (retryCount < maxRetries && !success) {
+        try {
+          const { data: hashtagData, error: hashtagError } = await supabase
+            .from('word_hashtags')
+            .select('english, hashtag')
+            .in('english', chunk);
+          
+          if (hashtagError) {
+            throw hashtagError;
+          }
+          
+          if (hashtagData) {
+            allHashtagData = allHashtagData.concat(hashtagData);
+            console.log(`청크 ${i + 1} 완료: ${hashtagData.length}개 해시태그 데이터 획득`);
+            success = true;
+          }
+        } catch (error) {
+          retryCount++;
+          console.warn(`청크 ${i + 1} 시도 ${retryCount}/${maxRetries} 실패:`, error);
+          
+          if (retryCount < maxRetries) {
+            // 재시도 전 대기 시간 (점진적으로 증가)
+            const waitTime = retryCount * 1000; // 1초, 2초, 3초
+            console.log(`${waitTime}ms 후 재시도...`);
+            await new Promise(resolve => setTimeout(resolve, waitTime));
+          } else {
+            console.error(`청크 ${i + 1} 최종 실패: 모든 재시도 소진`);
+          }
+        }
+      }
+      
+      // 요청 간 딜레이 (서버 부하 방지)
+      if (i < chunks.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 200)); // 딜레이를 200ms로 증가
+      }
+    }
+    
+    console.log('모든 청크 요청 완료. 총 해시태그 데이터:', allHashtagData.length, '개');
+    console.log('해시태그 샘플:', allHashtagData.slice(0, 5));
 
     // 단어별로 해시태그 그룹화
     const hashtagMap = new Map<string, string[]>();
-    hashtagData?.forEach(item => {
+    allHashtagData.forEach(item => {
       if (!hashtagMap.has(item.english)) {
         hashtagMap.set(item.english, []);
       }
@@ -78,30 +124,49 @@ export function useWords(category: string) {
             category === 'toefl' || category === 'gongmuwon' || category === 'gtelp') {
           console.log(`Loading ${category} words using legacy method`);
           
-          // 기존 방식: category 컬럼으로 직접 필터링
-          const { data: firstData, error: firstError } = await supabase
-            .from('words')
-            .select('*')
-            .eq('category', category)
-            .order('id', { ascending: true })
-            .range(0, 49);
+          // 재시도 로직 포함한 기존 방식: category 컬럼으로 직접 필터링
+          let retryCount = 0;
+          const maxRetries = 3;
+          let firstWords: Word[] = [];
+          
+          while (retryCount < maxRetries) {
+            try {
+              const { data: firstData, error: firstError } = await supabase
+                .from('words')
+                .select('*')
+                .eq('category', category)
+                .order('id', { ascending: true })
+                .range(0, 49);
 
-          if (firstError) {
-            console.error(`Error fetching ${category} words:`, firstError);
-            setError(firstError.message);
-            setLoading(false);
-            return;
+              if (firstError) {
+                throw firstError;
+              }
+
+              firstWords = (firstData || []).map((w: any) => ({
+                id: w.id,
+                english: w.english,
+                korean: w.korean,
+                pronunciation: w.pronunciation,
+                partOfSpeech: w.part_of_speech,
+                tip: w.tip,
+                categories: [] // 해시태그는 별도로 로드
+              }));
+              
+              break; // 성공시 루프 탈출
+            } catch (error) {
+              retryCount++;
+              console.warn(`${category} 단어 로딩 시도 ${retryCount}/${maxRetries} 실패:`, error);
+              
+              if (retryCount < maxRetries) {
+                await new Promise(resolve => setTimeout(resolve, retryCount * 1000));
+              } else {
+                console.error(`Error fetching ${category} words:`, error);
+                setError(error instanceof Error ? error.message : 'Failed to load words');
+                setLoading(false);
+                return;
+              }
+            }
           }
-
-          const firstWords: Word[] = (firstData || []).map((w: any) => ({
-            id: w.id,
-            english: w.english,
-            korean: w.korean,
-            pronunciation: w.pronunciation,
-            partOfSpeech: w.part_of_speech,
-            tip: w.tip,
-            categories: [] // 해시태그는 별도로 로드
-          }));
 
           // 해시태그(다중 카테고리) 정보 추가 로드
           if (firstWords.length > 0) {
@@ -125,14 +190,11 @@ export function useWords(category: string) {
             }
           });
 
-          // 디버깅: 데이터베이스에서 가져온 원본 데이터 확인
-          console.log('useWords - Raw data from database (first 3):', firstData?.slice(0, 3));
+          // 디버깅: 매핑된 단어 데이터 확인
           console.log('useWords - Mapped words (first 3):', firstWords.slice(0, 3));
           
           // ID 2번 단어 특별 확인
-          const rawWord2 = firstData?.find((w: any) => w.id === 2);
           const mappedWord2 = firstWords.find(w => w.id === 2);
-          console.log('useWords - Raw word ID 2:', rawWord2);
           console.log('useWords - Mapped word ID 2:', mappedWord2);
 
           console.log(`${category} words loaded: ${firstWords.length} words`);

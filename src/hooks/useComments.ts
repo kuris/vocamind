@@ -16,30 +16,47 @@ export function useComments(wordId: number | undefined) {
       setError(null);
       return;
     }
-    try {
-      if (showLoading) setLoading(true);
-      const { data, error } = await supabase
-        .from('comments')
-        .select('*')
-        .eq('word_id', wordId)
-        .order('created_at', { ascending: false });
+    
+    let retryCount = 0;
+    const maxRetries = 3;
+    
+    while (retryCount < maxRetries) {
+      try {
+        if (showLoading) setLoading(true);
+        const { data, error } = await supabase
+          .from('comments')
+          .select('*')
+          .eq('word_id', wordId)
+          .order('created_at', { ascending: false });
 
-      if (error) throw error;
+        if (error) throw error;
 
-      const formattedComments: Comment[] = data.map(comment => ({
-        id: parseInt(comment.id.replace(/-/g, '').substring(0, 10), 16),
-        wordId: comment.word_id,
-        content: comment.content,
-        author: comment.author,
-        createdAt: new Date(comment.created_at)
-      }));
+        const formattedComments: Comment[] = data.map(comment => ({
+          id: parseInt(comment.id.replace(/-/g, '').substring(0, 10), 16),
+          wordId: comment.word_id,
+          content: comment.content,
+          author: comment.author,
+          createdAt: new Date(comment.created_at)
+        }));
 
-      setComments(formattedComments);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch comments');
-      console.error('Error fetching comments:', err);
-    } finally {
-      if (showLoading) setLoading(false);
+        setComments(formattedComments);
+        setError(null); // 성공시 에러 초기화
+        return; // 성공시 함수 종료
+      } catch (err) {
+        retryCount++;
+        const errorMessage = err instanceof Error ? err.message : 'Failed to fetch comments';
+        
+        if (retryCount < maxRetries) {
+          console.warn(`댓글 로딩 시도 ${retryCount}/${maxRetries} 실패, 재시도 중...`, err);
+          // 재시도 전 대기
+          await new Promise(resolve => setTimeout(resolve, retryCount * 1000));
+        } else {
+          setError(errorMessage);
+          console.error('Error fetching comments:', err);
+        }
+      } finally {
+        if (showLoading) setLoading(false);
+      }
     }
   };
 
