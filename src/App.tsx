@@ -58,7 +58,7 @@ function App() {
     }
   }, [words, mode, category]);
   // Always call useComments, even if currentWord is undefined
-  const { comments, loading, error, addComment, deleteComment, refetch } = useComments(currentWord?.id);
+  const { comments, loading, error, addComment, deleteComment, refetch } = useComments(currentWord?.id || 0);
 
   // Only render loading/error/empty after all hooks
   if (wordsLoading) {
@@ -165,7 +165,7 @@ function App() {
             <div id="coupang-banner-left" style={{ minWidth: 120, minHeight: 60 }}></div>
             <div id="coupang-banner-right" style={{ minWidth: 120, minHeight: 60 }}></div>
           </div>
-          {error && (
+          {error && !error.toLowerCase().includes('failed to fetch comments') && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
               <p className="font-medium">오류가 발생했습니다:</p>
               <p className="text-sm">{error}</p>
@@ -180,15 +180,17 @@ function App() {
                 onNext={handleNext}
               />
               <WordCard word={currentWord} category={category} />
-              <CommentSection
-                wordId={currentWord.id}
-                word={currentWord}
-                comments={comments}
-                loading={loading}
-                onAddComment={handleAddComment}
-                onDeleteComment={handleDeleteComment}
-                refetchComments={refetch}
-              />
+              {currentWord && (
+                <CommentSection
+                  wordId={currentWord.id}
+                  word={currentWord}
+                  comments={comments}
+                  loading={loading}
+                  onAddComment={handleAddComment}
+                  onDeleteComment={handleDeleteComment}
+                  refetchComments={refetch}
+                />
+              )}
             </>
           ) : (
             <QuizCard

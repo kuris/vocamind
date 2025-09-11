@@ -3,16 +3,17 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { Comment } from '../types';
 
-export function useComments(wordId: number) {
+export function useComments(wordId: number | undefined) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Fetch comments for specific wordId
   const fetchComments = async (showLoading = false) => {
-    if (!wordId) {
+    if (!wordId || wordId === 0) {
       setComments([]);
       setLoading(false);
+      setError(null);
       return;
     }
     try {
