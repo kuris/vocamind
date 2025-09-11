@@ -19,6 +19,9 @@ export default defineConfig({
         orientation: 'portrait',
         scope: '/',
         start_url: '/',
+        id: 'magicvoca-app',
+        lang: 'ko',
+        dir: 'ltr',
         icons: [
           {
             src: 'pwa-64x64.png',
