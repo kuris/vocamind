@@ -54,17 +54,17 @@ export function PWAInstallPrompt() {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 bg-blue-600 text-white p-4 rounded-lg shadow-lg z-50 max-w-sm mx-auto">
+    <div className="fixed bottom-4 left-4 right-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4 rounded-lg shadow-lg z-50 max-w-sm mx-auto">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <h3 className="font-semibold text-sm mb-1">앱으로 설치하기</h3>
+          <h3 className="font-semibold text-sm mb-1">✨ 앱으로 설치하기</h3>
           <p className="text-xs opacity-90 mb-3">
-            VocaMind를 홈 화면에 추가하여 더 편리하게 사용하세요!
+            MagicVoca를 홈 화면에 추가하여 마법처럼 편리하게 사용하세요!
           </p>
           <div className="flex gap-2">
             <button
               onClick={handleInstall}
-              className="flex items-center gap-1 bg-white text-blue-600 px-3 py-1.5 rounded text-xs font-medium"
+              className="flex items-center gap-1 bg-white text-purple-600 px-3 py-1.5 rounded text-xs font-medium"
             >
               <Download size={12} />
               설치

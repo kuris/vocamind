@@ -1,6 +1,57 @@
-<!-- PWA 아이콘 생성을 위한 임시 SVG -->
+<!-- MagicVoca 아이콘 - 마법의 단어 학습 앱 -->
 <svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <rect width="512" height="512" fill="#3b82f6"/>
-  <text x="256" y="280" text-anchor="middle" fill="white" font-size="160" font-family="Arial, sans-serif" font-weight="bold">VM</text>
-  <text x="256" y="400" text-anchor="middle" fill="white" font-size="48" font-family="Arial, sans-serif">VocaMind</text>
+  <!-- 그라데이션 배경 -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffed4a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="512" height="512" rx="64" fill="url(#bgGradient)"/>
+  
+  <!-- 마법의 별들 -->
+  <g fill="url(#starGradient)" opacity="0.8">
+    <!-- 큰 별 -->
+    <path d="M128 128 L138 148 L158 148 L142 162 L148 182 L128 168 L108 182 L114 162 L98 148 L118 148 Z"/>
+    <!-- 작은 별들 -->
+    <circle cx="384" cy="96" r="4"/>
+    <circle cx="416" cy="128" r="3"/>
+    <circle cx="96" cy="384" r="3"/>
+    <circle cx="64" cy="416" r="4"/>
+  </g>
+  
+  <!-- 중앙 책 아이콘 -->
+  <g transform="translate(256,256)">
+    <!-- 책 -->
+    <rect x="-80" y="-60" width="160" height="120" rx="8" fill="#ffffff" opacity="0.95"/>
+    <rect x="-75" y="-55" width="150" height="110" rx="6" fill="#f8fafc"/>
+    
+    <!-- 책 페이지 선들 -->
+    <line x1="-60" y1="-35" x2="60" y2="-35" stroke="#e2e8f0" stroke-width="2"/>
+    <line x1="-60" y1="-15" x2="40" y2="-15" stroke="#e2e8f0" stroke-width="2"/>
+    <line x1="-60" y1="5" x2="50" y2="5" stroke="#e2e8f0" stroke-width="2"/>
+    <line x1="-60" y1="25" x2="30" y2="25" stroke="#e2e8f0" stroke-width="2"/>
+    
+    <!-- 중앙의 M 글자 -->
+    <text x="0" y="15" text-anchor="middle" fill="#667eea" font-size="48" font-family="Arial, sans-serif" font-weight="bold">M</text>
+  </g>
+  
+  <!-- 마법 효과 (반짝이는 점들) -->
+  <g fill="#ffffff" opacity="0.6">
+    <circle cx="180" cy="180" r="2"/>
+    <circle cx="340" cy="160" r="1.5"/>
+    <circle cx="320" cy="340" r="2"/>
+    <circle cx="160" cy="360" r="1.5"/>
+    <circle cx="380" cy="300" r="1"/>
+    <circle cx="140" cy="300" r="1"/>
+  </g>
+  
+  <!-- 하단 앱 이름 -->
+  <text x="256" y="450" text-anchor="middle" fill="#ffffff" font-size="32" font-family="Arial, sans-serif" font-weight="600" opacity="0.9">MagicVoca</text>
 </svg>
