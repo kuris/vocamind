@@ -7,6 +7,7 @@ import { QuizCard } from './components/QuizCard';
 import { CommentSection } from './components/CommentSection';
 import { WordNavigation } from './components/WordNavigation';
 import { Header } from './components/Header';
+import { PWAInstallPrompt } from './components/PWAInstallPrompt';
 import { useWords } from './hooks/useWords';
 import { useComments } from './hooks/useComments';
 
@@ -224,6 +225,7 @@ function App() {
           </div>
         </div>
       </div>
+      <PWAInstallPrompt />
   {/* 안내문구는 위에서 한 번만 표시됨 */}
       <Analytics />
     </>
