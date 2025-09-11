@@ -8,7 +8,11 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icon.svg'],
+      includeAssets: ['favicon.ico', 'apple-touch-icon-180x180.png', 'icon.svg'],
+      strategies: 'generateSW',
+      filename: 'sw.js',
+      manifestFilename: 'manifest.json',
+      useCredentials: true,
       manifest: {
         name: 'MagicVoca - 마법의 단어학습',
         short_name: 'MagicVoca',
