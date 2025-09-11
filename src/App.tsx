@@ -72,7 +72,7 @@ function App() {
     );
   }
   // 디버그: words와 error를 화면에 출력
-  if (wordsError || !currentWord) {
+  if (wordsError && !wordsError.toLowerCase().includes('failed to fetch')) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-red-600">
         <div>Error loading words: {typeof wordsError === 'string' ? wordsError : JSON.stringify(wordsError)}</div>
@@ -80,6 +80,14 @@ function App() {
           <strong>words 배열:</strong>
           <pre>{JSON.stringify(words, null, 2)}</pre>
         </div>
+      </div>
+    );
+  }
+  
+  if (!currentWord) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-gray-600">
+        <div>단어를 불러오는 중...</div>
       </div>
     );
   }
